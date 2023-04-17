@@ -252,7 +252,132 @@ static void DFSDM_Init(void)
     Error_Handler();
   }
 }
+/**
+  * @brief  This function send a Write Enable and wait it is effective.
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+static void QSPI_WriteEnable(QSPI_HandleTypeDef *hqspi)
+{
+  QSPI_CommandTypeDef     sCommand;
+  QSPI_AutoPollingTypeDef sConfig;
 
+  /* Enable write operations ------------------------------------------ */
+  sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+  sCommand.Instruction       = WRITE_ENABLE_CMD;
+  sCommand.AddressMode       = QSPI_ADDRESS_NONE;
+  sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+  sCommand.DataMode          = QSPI_DATA_NONE;
+  sCommand.DummyCycles       = 0;
+  sCommand.DdrMode           = QSPI_DDR_MODE_DISABLE;
+  sCommand.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+  sCommand.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+  if (HAL_QSPI_Command(&QSPIHandle, &sCommand, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  
+  /* Configure automatic polling mode to wait for write enabling ---- */  
+  sConfig.Match           = 0x02;
+  sConfig.Mask            = 0x02;
+  sConfig.MatchMode       = QSPI_MATCH_MODE_AND;
+  sConfig.StatusBytesSize = 1;
+  sConfig.Interval        = 0x10;
+  sConfig.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
+
+  sCommand.Instruction    = READ_STATUS_REG_CMD;
+  sCommand.DataMode       = QSPI_DATA_1_LINE;
+
+  if (HAL_QSPI_AutoPolling(&QSPIHandle, &sCommand, &sConfig, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief  This function read the SR of the memory and wait the EOP.
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+static void QSPI_AutoPollingMemReady(QSPI_HandleTypeDef *hqspi)
+{
+  QSPI_CommandTypeDef     sCommand;
+  QSPI_AutoPollingTypeDef sConfig;
+
+  /* Configure automatic polling mode to wait for memory ready ------ */  
+  sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+  sCommand.Instruction       = READ_STATUS_REG_CMD;
+  sCommand.AddressMode       = QSPI_ADDRESS_NONE;
+  sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+  sCommand.DataMode          = QSPI_DATA_1_LINE;
+  sCommand.DummyCycles       = 0;
+  sCommand.DdrMode           = QSPI_DDR_MODE_DISABLE;
+  sCommand.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+  sCommand.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+
+  sConfig.Match           = 0x00;
+  sConfig.Mask            = 0x01;
+  sConfig.MatchMode       = QSPI_MATCH_MODE_AND;
+  sConfig.StatusBytesSize = 1;
+  sConfig.Interval        = 0x10;
+  sConfig.AutomaticStop   = QSPI_AUTOMATIC_STOP_ENABLE;
+
+  if (HAL_QSPI_AutoPolling_IT(&QSPIHandle, &sCommand, &sConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief  This function configure the dummy cycles on memory side.
+  * @param  hqspi: QSPI handle
+  * @retval None
+  */
+static void QSPI_DummyCyclesCfg(QSPI_HandleTypeDef *hqspi)
+{
+  QSPI_CommandTypeDef sCommand;
+  uint8_t reg;
+
+  /* Read Volatile Configuration register --------------------------- */
+  sCommand.InstructionMode   = QSPI_INSTRUCTION_1_LINE;
+  sCommand.Instruction       = READ_VOL_CFG_REG_CMD;
+  sCommand.AddressMode       = QSPI_ADDRESS_NONE;
+  sCommand.AlternateByteMode = QSPI_ALTERNATE_BYTES_NONE;
+  sCommand.DataMode          = QSPI_DATA_1_LINE;
+  sCommand.DummyCycles       = 0;
+  sCommand.DdrMode           = QSPI_DDR_MODE_DISABLE;
+  sCommand.DdrHoldHalfCycle  = QSPI_DDR_HHC_ANALOG_DELAY;
+  sCommand.SIOOMode          = QSPI_SIOO_INST_EVERY_CMD;
+  sCommand.NbData            = 1;
+
+  if (HAL_QSPI_Command(&QSPIHandle, &sCommand, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  if (HAL_QSPI_Receive(&QSPIHandle, &reg, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /* Enable write operations ---------------------------------------- */
+  QSPI_WriteEnable(&QSPIHandle);
+
+  /* Write Volatile Configuration register (with new dummy cycles) -- */  
+  sCommand.Instruction = WRITE_VOL_CFG_REG_CMD;
+  MODIFY_REG(reg, 0xF0, (DUMMY_CLOCK_CYCLES_READ_QUAD << POSITION_VAL(0xF0)));
+      
+  if (HAL_QSPI_Command(&QSPIHandle, &sCommand, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  if (HAL_QSPI_Transmit(&QSPIHandle, &reg, HAL_QSPI_TIMEOUT_DEFAULT_VALUE) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
 /**
   * @brief  Playback initialization
   * @param  None
