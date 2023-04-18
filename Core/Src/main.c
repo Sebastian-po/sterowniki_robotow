@@ -31,6 +31,45 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#define LCD_COM0 LCD_RAM_REGISTER0
+#define LCD_COM0_1 LCD_RAM_REGISTER1
+#define LCD_COM1 LCD_RAM_REGISTER2
+#define LCD_COM1_1 LCD_RAM_REGISTER3
+#define LCD_COM2 LCD_RAM_REGISTER4
+#define LCD_COM2_1 LCD_RAM_REGISTER5
+#define LCD_COM3 LCD_RAM_REGISTER6
+#define LCD_COM3_1 LCD_RAM_REGISTER7
+
+
+#define LCD_SEG0 (1U<<4)
+#define LCD_SEG1 (1U<<23)
+#define LCD_SEG2 (1U<<6)
+#define LCD_SEG3 (1U<<13)
+#define LCD_SEG4 (1U<<15)
+#define LCD_SEG5 (1U<<29)
+#define LCD_SEG6 (1U<<31)
+#define LCD_SEG7 (1U<<1) //drugi rejestr
+#define LCD_SEG8 (1U<<3) //drugi rejestr
+#define LCD_SEG9 (1U<<25)
+#define LCD_SEG10 (1U<<17)
+#define LCD_SEG11 (1U<<8)
+#define LCD_SEG12 (1U<<9)
+#define LCD_SEG13 (1U<<26)
+#define LCD_SEG14 (1U<<24)
+#define LCD_SEG15 (1U<<2) //drugi rejestr
+#define LCD_SEG16 (1U<<0) //drugi rejestr
+#define LCD_SEG17 (1U<<30)
+#define LCD_SEG18 (1U<<28)
+#define LCD_SEG19 (1U<<14)
+#define LCD_SEG20 (1U<<12)
+#define LCD_SEG21 (1U<<5)
+#define LCD_SEG22 (1U<<22)
+#define LCD_SEG23 (1U<<3)
+
+
+
+
+
 
 /* USER CODE END Includes */
 
@@ -105,12 +144,77 @@ int main(void)
   MX_USART2_UART_Init();
   MX_USB_HOST_Init();
   /* USER CODE BEGIN 2 */
-  
+  HAL_LCD_Clear(&hlcd);
+//Wyświetla napis AUdIO
+  HAL_LCD_Write(&hlcd, LCD_COM0, 0xFFFFFFFF, LCD_SEG22|LCD_SEG0|LCD_SEG23|LCD_SEG1|LCD_SEG2|LCD_SEG20|LCD_SEG18|LCD_SEG4|LCD_SEG19|LCD_SEG5|LCD_SEG14);
+  HAL_LCD_Write(&hlcd, LCD_COM0_1, 0xFF, LCD_SEG8);
+
+  HAL_LCD_Write(&hlcd, LCD_COM1, 0xFFFFFFFF, LCD_SEG22|LCD_SEG23|LCD_SEG1|LCD_SEG2|LCD_SEG3|LCD_SEG21|LCD_SEG4|LCD_SEG5|LCD_SEG14|LCD_SEG15|LCD_SEG9);
+  HAL_LCD_Write(&hlcd, LCD_COM1_1, 0xFF, LCD_SEG8|LCD_SEG15);
+
+  HAL_LCD_Write(&hlcd, LCD_COM2, 0xFFFFFFFF, LCD_SEG6);
+  HAL_LCD_Write(&hlcd, LCD_COM2_1, 0xFF, 0x00);
+
+  HAL_LCD_Write(&hlcd, LCD_COM3, 0xFFFFFFFF, 0);
+  HAL_LCD_Write(&hlcd, LCD_COM3_1, 0xFF, LCD_SEG16);
+
+  HAL_LCD_UpdateDisplayRequest(&hlcd);
+
+
 
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
+
+
+  while (1)
+  {
+//JOYstick
+
+	  if(GPIO_PIN_RESET == HAL_GPIO_ReadPin(JOY_LEFT_GPIO_Port, JOY_LEFT_Pin))
+	  {
+
+		  HAL_GPIO_WritePin(LD_R_GPIO_Port, LD_R_Pin, GPIO_PIN_RESET);
+	  }
+		  else
+		  HAL_GPIO_WritePin(LD_R_GPIO_Port, LD_R_Pin, GPIO_PIN_SET);
+
+	  if(GPIO_PIN_RESET == HAL_GPIO_ReadPin(JOY_RIGHT_GPIO_Port, JOY_RIGHT_Pin))
+
+		  HAL_GPIO_WritePin(LD_G_GPIO_Port, LD_G_Pin, GPIO_PIN_RESET);
+		  else
+		  HAL_GPIO_WritePin(LD_G_GPIO_Port, LD_G_Pin, GPIO_PIN_SET);
+
+	  if(GPIO_PIN_RESET == HAL_GPIO_ReadPin(JOY_UP_GPIO_Port, JOY_UP_Pin))
+
+		  HAL_GPIO_WritePin(LD_R_GPIO_Port, LD_R_Pin, GPIO_PIN_RESET);
+		  else
+		  HAL_GPIO_WritePin(LD_R_GPIO_Port, LD_R_Pin, GPIO_PIN_SET);
+
+	  if(GPIO_PIN_RESET == HAL_GPIO_ReadPin(JOY_DOWN_GPIO_Port, JOY_DOWN_Pin))
+
+		  HAL_GPIO_WritePin(LD_G_GPIO_Port, LD_G_Pin, GPIO_PIN_RESET);
+		  else
+		  HAL_GPIO_WritePin(LD_G_GPIO_Port, LD_G_Pin, GPIO_PIN_SET);
+
+	  if(GPIO_PIN_RESET == HAL_GPIO_ReadPin(JOY_CENTER_GPIO_Port, JOY_CENTER_Pin))
+	  {
+		  HAL_GPIO_WritePin(LD_R_GPIO_Port, LD_R_Pin, GPIO_PIN_RESET);
+	  	  HAL_GPIO_WritePin(LD_G_GPIO_Port, LD_G_Pin, GPIO_PIN_RESET);
+	  }
+		  else
+		  {
+		  HAL_GPIO_WritePin(LD_R_GPIO_Port, LD_R_Pin, GPIO_PIN_SET);
+	  	  HAL_GPIO_WritePin(LD_G_GPIO_Port, LD_G_Pin, GPIO_PIN_SET);
+		  }
+
+	 // HAL_LCD_UpdateDisplayRequest(&hlcd);
+
+	//  HAL_Delay(100); //opóżnienie odświerzania wyświetlacza
+
+
+
 
 
 
