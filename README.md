@@ -1,5 +1,5 @@
 # sterowniki_robotow
 
-W ramach projektu realizowany będzie program wykrywania komend głosowych, oraz odtwarzania plików audio za pomocą mikrokontrolera STM32L476 Discovery.
+W ramach projektu realizowany będzie program wykrywania audio z mikrofonu, przetwarzanie go i wysyłanie dźwięku na audio DAC za pomocą mikrokontrolera STM32L476 Discovery.
 
-Nasłuchiwanie i komunikacja dźwiękowa odbywać się będzie za pomocą audio DACa. Komendy głosowe będą rozpoznawane poprzez porównywanie widm dźwięków przesłanych do mikrokontrolera z próbkami wcześniej do niego wgranymi. Dostępnych będzie około 6 komend odpowiadających za poszczególne akcje przy odtwarzaniu dźwięków. Przetwarzanie dźwięku wejściowego odbywać się będzie za pomocą szybkiej transformaty Fouriera.
+Nasłuchiwanie i komunikacja dźwiękowa odbywać się będzie za pomocą audio DACa. Przetwarzanie dźwięku wejściowego odbywać się będzie za pomocą szybkiej transformacji Fouriera. Transformata zapisywana będzie w pamięci flash.
