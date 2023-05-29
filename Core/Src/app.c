@@ -71,7 +71,7 @@ void APP_HandleEvent(App_EventTypeDef event) {
 				BSP_LCD_GLASS_Clear();
 				BSP_LCD_GLASS_DisplayString((uint8_t *)"PAUSED");
 
-				audio_drv->Pause(0x08080000);
+				audio_drv->Pause(AUDIO_I2C_ADDRESS);
 
 			}
 			else if (app_state == LOOPBACK_PAUSE) {
@@ -90,9 +90,8 @@ void APP_HandleEvent(App_EventTypeDef event) {
 
 				BSP_LCD_GLASS_Clear();
 				BSP_LCD_GLASS_DisplayString((uint8_t *)"RECORD");
-
-				audio_drv->Pause(AUDIO_I2C_ADDRESS);
-				audio_drv->Resume(0x08080000);
+				
+				audio_drv->Resume(AUDIO_I2C_ADDRESS);
 
 			}
 		}
