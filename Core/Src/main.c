@@ -250,7 +250,6 @@ uint32_t Flash_Write_Data (uint32_t StartPageAddress, int64_t *Data, int numofwo
 
    /* Fill EraseInit structure*/
    EraseInitStruct.TypeErase = FLASH_TYPEERASE_PAGES;
-   //EraseInitStruct.Banks = FLASH_BANK_BOTH;
    EraseInitStruct.Page = StartPageAddress;
    EraseInitStruct.NbPages = (numofwords * 8/FLASH_PAGE_SIZE)+1;
 
