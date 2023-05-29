@@ -54,7 +54,6 @@
 AUDIO_DrvTypeDef *audio_drv;
 int32_t RecBuff[2048];
 int16_t PlayBuff[4096];
-uint64_t Rx_Data[4096];
 uint32_t DmaRecHalfBuffCplt	= 0;
 uint32_t DmaRecBuffCplt		= 0;
 uint32_t PlaybackStarted	= 0;
@@ -245,7 +244,7 @@ uint32_t Flash_Write_Data (uint32_t StartPageAddress, int64_t *Data, int numofwo
 	uint32_t PAGEError;
 	int sofar=0;
 
-	/* Unlock the Flash to enable the flash control register access *************/
+	/* Unlock the Flash to enable the flash control register access */
    HAL_FLASH_Unlock();
 
    /* Fill EraseInit structure*/
@@ -279,7 +278,7 @@ uint32_t Flash_Write_Data (uint32_t StartPageAddress, int64_t *Data, int numofwo
    }
 
    /* Lock the Flash to disable the flash control register access (recommended
-	  to protect the FLASH memory against possible unwanted operation) *********/
+	  to protect the FLASH memory against possible unwanted operation) */
    HAL_FLASH_Lock();
 
    return StartPageAddress;
