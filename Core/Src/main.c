@@ -146,7 +146,7 @@ int main(void)
   while (1)
   {
 	 /* Store values on Play buff */
-	 for(i = 0; i < 2048; i++)
+	 for(i = 0; i < 2048; ++i)
 	 {
 	  	PlayBuff[2*i]     = SaturaLH((RecBuff[i] >> 8), -32768, 32767);
 	  	PlayBuff[(2*i)+1] = PlayBuff[2*i];
@@ -155,7 +155,7 @@ int main(void)
 	    {
 	    	  SamplesReady = 0;
 
-	    	  for(i = 0; i < FFT_SAMPLES; i++)
+	    	  for(i = 0; i < FFT_SAMPLES; ++i)
 	    	  {
 	    		  FFTInBuffer[i] =  (float)PlayBuff[i];
 	    	  }
