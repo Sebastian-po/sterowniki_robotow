@@ -54,6 +54,7 @@
 AUDIO_DrvTypeDef *audio_drv;
 int32_t RecBuff[2048];
 int16_t PlayBuff[4096];
+uint8_t OutFreqArray[10];
 uint32_t DmaRecHalfBuffCplt	= 0;
 uint32_t DmaRecBuffCplt		= 0;
 uint32_t PlaybackStarted	= 0;
@@ -65,8 +66,6 @@ float FFTOutBuffer[FFT_SAMPLES];
 arm_rfft_fast_instance_f32 FFTHandler;
 
 volatile uint8_t SamplesReady;
-
-uint8_t OutFreqArray[10];
 
 /* USER CODE END PV */
 
