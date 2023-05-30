@@ -267,7 +267,7 @@ uint32_t Flash_Write_Data (uint32_t StartPageAddress, int64_t *Data, int numofwo
 	 if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_DOUBLEWORD, StartPageAddress, Data[sofar]) == HAL_OK)
 	 {
 		 StartPageAddress += 8;  // use StartPageAddress += 2 for half word and 8 for double word
-		 sofar++;
+		 ++sofar;
 	 }
 	 else
 	 {
