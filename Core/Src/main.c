@@ -291,7 +291,9 @@ void Flash_Read_Data (uint32_t StartPageAddress, int64_t *RxBuf, int numofwords)
 		StartPageAddress += 8;
 		RxBuf++;
 		if (!(--numofwords - 1))
+		{
 			break;
+		}
 	}
 }
 float complexABS(float real, float compl) {
